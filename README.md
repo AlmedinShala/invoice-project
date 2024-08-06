@@ -8,9 +8,9 @@ Authentication: Clerk
 
 ## Run the development server:
 ```bash
-Run ``` npm i ``` to install the project dependencies.
-Run ``` npm run ```db-create to create the database tables.
-Start the development server by running: ```npm run dev ```.
+Run ``` npm install ``` to install the project dependencies.
+Run ``` npm run db-create ``` to create the database tables.
+Start the development server by running: ``` npm run dev ```.
 ```
 
 ## Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

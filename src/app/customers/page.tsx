@@ -50,6 +50,7 @@ export default function Customers() {
       setCustomerEmail("");
       setCustomerName("");
       setLoading(false);
+      fetchCustomers();
     } catch (err) {
       console.log(err);
     }

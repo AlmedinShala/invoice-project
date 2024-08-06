@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { useUser } from "@clerk/nextjs";
-import Link from "next/link";
 import SideNav from "@/app/components/SideNav";
 
 export default function History() {
@@ -55,15 +54,6 @@ export default function History() {
                     {Number(invoice.total_amount).toLocaleString()}
                   </h3>
                 </div>
-                {/* <Link
-                  href={{
-                    pathname: `/invoices/${invoice.id}`,
-                    query: { customer: invoice.customer_id },
-                  }}
-                  className="bg-blue-500 text-blue-50 rounded p-3"
-                >
-                  Preview
-                </Link> */}
               </div>
             ))
           ) : (

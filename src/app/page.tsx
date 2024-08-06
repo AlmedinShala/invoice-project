@@ -1,11 +1,6 @@
 import Link from "next/link";
 
-import { getDBVersion } from "./db";
-
-export default async function Home() {
-  const { version } = await getDBVersion();
-  console.log({ version });
-
+export default function Home() {
   return (
     <main className="w-full">
       <section className="p-8 h-[90vh] md:w-2/3 mx-auto text-center w-full flex flex-col items-center justify-center">
@@ -17,6 +12,7 @@ export default async function Home() {
           print professional invoices for your customers for free! Keep your
           business and clients with one invoicing software.
         </p>
+
         <Link
           href="/dashboard"
           className="rounded w-[200px] px-2 py-3 bg-blue-500 text-gray-50"

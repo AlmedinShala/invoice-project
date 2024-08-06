@@ -1,21 +1,40 @@
 "use client";
 import { ChangeEvent, useEffect, useState, useCallback } from "react";
+import { useUser } from "@clerk/nextjs";
 import SideNav from "@/app/components/SideNav";
 
 export default function Settings() {
+  const { isLoaded, isSignedIn, user } = useUser();
   const [bankInfo, setBankInfo] = useState({
     account_name: "",
     account_number: 1234567890,
     bank_name: "",
     currency: "",
   });
-
   const [inputBankInfo, setInputBankInfo] = useState({
     accountName: "",
     accountNumber: 1234567890,
     bankName: "",
     currency: "",
   });
+
+  const fetchBankInfo = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/bank-info?userID=${user?.id}`);
+      const data = await response.json();
+      if (data) {
+        setBankInfo(data.bankInfo[0]);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchBankInfo();
+    }
+  }, [bankInfo, user, fetchBankInfo]);
 
   const handleUpdateBankInfo = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -29,8 +48,37 @@ export default function Settings() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Tries to update bank info...");
+    updateBankInfo();
   };
+
+  const updateBankInfo = async () => {
+    try {
+      const response = await fetch("/api/bank-info", {
+        method: "POST",
+        body: JSON.stringify({ userID: user?.id, ...inputBankInfo }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (data) {
+        alert(data.message);
+      }
+      setBankInfo({
+        account_name: "",
+        account_number: 1234567890,
+        bank_name: "",
+        currency: "",
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  if (!isLoaded || !isSignedIn) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="w-full">
       <main className="min-h-[90vh] flex items-start">
@@ -43,20 +91,22 @@ export default function Settings() {
           </p>
 
           <div className="flex md:flex-row flex-col items-start justify-between w-full md:space-x-4">
-            <section className="md:w-1/3 w-full bg-blue-50 h-full p-3 rounded-md space-y-3">
-              <p className="text-sm opacity-75">
-                Account Name: {bankInfo.account_name}
-              </p>
-              <p className="text-sm opacity-75">
-                Account Number: {bankInfo.account_number}
-              </p>
-              <p className="text-sm opacity-75">
-                Bank Name: {bankInfo.bank_name}
-              </p>
-              <p className="text-sm opacity-75">
-                Currency: {bankInfo.currency}
-              </p>
-            </section>
+            {bankInfo?.account_name && (
+              <section className="md:w-1/3 w-full bg-blue-50 h-full p-3 rounded-md space-y-3">
+                <p className="text-sm opacity-75">
+                  Account Name: {bankInfo.account_name}
+                </p>
+                <p className="text-sm opacity-75">
+                  Account Number: {bankInfo.account_number}
+                </p>
+                <p className="text-sm opacity-75">
+                  Bank Name: {bankInfo.bank_name}
+                </p>
+                <p className="text-sm opacity-75">
+                  Currency: {bankInfo.currency}
+                </p>
+              </section>
+            )}
 
             <form
               className="md:w-2/3 w-full p-3 flex flex-col"
